@@ -17,6 +17,7 @@ const connection = mysql.createConnection({
 //User prompt messages/functions
 welcomeMessage = () => {
  console.log('===== Welcome to the Employee database! ======')
+ initiate();
 }
 
 initiate = () => {
@@ -26,17 +27,17 @@ initiate = () => {
             type: 'list',
             name: 'options',
             message: 'What can I help you with today?',
-            choices: ['View all employees.', 'View all Employees by Department.', 'View all Employees by Manager.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.',]
+            choices: ['View all employees.', 'View all roles.', 'View all departments.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.',]
         }
     ]);
     if (option.choice === "View all employees.") {
         viewAllEmployees();
     }
-    else if (option.choice === "View all Employees by Department."){
-        viewEmployeesByDepartment();
+    else if (option.choice === "View all roles."){
+        viewAllRoles();
     }
-    else if (option.choice === "View all Employees by Manager."){
-        viewEmployeesByManager();
+    else if (option.choice === "View all departments."){
+        viewAllDepartments();
     }
     else if (option.choice === "Add an employee.") {
         addEmployee();
@@ -51,6 +52,7 @@ initiate = () => {
 }
 
 viewAllEmployees = () => {
+    //shows a table that has first names, last names, job titles, departments, salaries, and managers that the employee reports to
     console.log('Viewing all employees.')
     connection.query('SELECT * FROM employees', function (err, res) {
         if (err) throw err;
@@ -60,14 +62,26 @@ viewAllEmployees = () => {
     })
 }
 
-viewEmployeesByDepartment = () => {
-
-    initiate();
+viewAllDepartments = () => {
+    //shows a table that has department name and department ID
+    console.log('Viewing all departments.')
+    connection.query('SELECT * from departments', function (err, res){
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+        initiate();
+    })
 }
 
-viewEmployeesByManager = () => {
-
-    initiate();
+viewAllRoles = () => {
+    //shows a table that has job title, role id, the department the role belongs to and the salary for that role
+    console.log('Viewing all roles')
+    connection.query('SELECT title, id, department_name, salary FROM roles LEFT JOIN departments ON roles.department_id = departments.id', function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+        initiate();
+    })
 }
 
 addEmployee = () => {
