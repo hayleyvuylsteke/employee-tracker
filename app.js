@@ -1,44 +1,24 @@
 //Requirements for program to run
-const express = require('express');
-const app = express();
 const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
 const cTable = require('console.table');
-
-//Declaring Port information
-const PORT = process.env.PORT || 3006;
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 //connect to database
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    database: 'directory.db'
+    database: 'directory.db',
+    port: 3008,
+    password: 'Marketer101!'
 })
-
-//Test Route
-app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello World'
-    });
-  });
   
-
-// Default response for any other request(Not Found) Catch all
-app.use((req, res) => {
-    res.status(404).end();
-  });
-
 
 //User prompt messages/functions
 welcomeMessage = () => {
  console.log('===== Welcome to the Employee database! ======')
 }
 
-initiate = async () => {
+initiate = () => {
     
     const option = await inquirer.prompt([
         {
