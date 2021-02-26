@@ -29,25 +29,26 @@ initiate = () => {
             message: 'What can I help you with today?',
             choices: ['View all employees.', 'View all roles.', 'View all departments.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.',]
         }
-    ]);
-    if (option.choice === "View all employees.") {
-        viewAllEmployees();
-    }
-    else if (option.choice === "View all roles."){
-        viewAllRoles();
-    }
-    else if (option.choice === "View all departments."){
-        viewAllDepartments();
-    }
-    else if (option.choice === "Add an employee.") {
-        addEmployee();
-    }
-    else if (option.choice === "Update an employee.") {
-        updateEmployee();
-    }
-    else if (option.choice === "Delete an employee.") {
-        deleteEmployee();
-    }
+    ]).then((option) => {
+        if (option.choice === "View all employees.") {
+            viewAllEmployees();
+        }
+        else if (option.choice === "View all roles."){
+            viewAllRoles();
+        }
+        else if (option.choice === "View all departments."){
+         viewAllDepartments();
+        }
+        else if (option.choice === "Add an employee.") {
+            addEmployee();
+        }
+        else if (option.choice === "Update an employee.") {
+            updateEmployee();
+        }
+        else if (option.choice === "Delete an employee.") {
+            deleteEmployee();
+        }
+})
     
 }
 
