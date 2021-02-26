@@ -1,12 +1,12 @@
-DROP DATABASE IF EXISTS <DBNAME>;
+DROP DATABASE IF EXISTS directory.db;
 
-CREATE DATABASE <DBNAME>;
+CREATE DATABASE directory.db;
 
-USE <DBNAME>;
+USE directory.db;
 
 CREATE TABLE department (
     id INT PRIMARY KEY,
-    departmentName VARCHAR(30) NOT NULL,
+    name VARCHAR(30) NOT NULL,
 );
 
 CREATE TABLE role (

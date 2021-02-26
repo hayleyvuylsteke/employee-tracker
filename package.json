@@ -4,7 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "migrate": "mysql source schema.sql",
+    "seed": "mysql source seeds.sql",
+    "db": "mysql open db/directory.db"
   },
   "repository": {
     "type": "git",
