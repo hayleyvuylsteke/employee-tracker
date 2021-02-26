@@ -4,7 +4,6 @@ const app = express();
 const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
 const cTable = require('console.table');
-const { builtinModules } = require('module');
 
 //Declaring Port information
 const PORT = process.env.PORT || 3006;
