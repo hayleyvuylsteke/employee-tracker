@@ -161,7 +161,8 @@ addEmployee = () => {
           }
         ]).then((employee) => {
             //Set Role ID
-            let roleID,
+            let roleID;
+            var x;
             for (x=0; x < roleOptions.length; x++) {
                 if (employee.role === roleOptions[x].title) {
                     roleID = roleOptions[x].id
@@ -169,9 +170,10 @@ addEmployee = () => {
             }
 
             //Set Manager ID
-            let managerID,
+            let managerID;
+            var x;
             for (x=0; x < managerOptions.length; x++) {
-                of (employee.manager === managerOptions[x].managerName) {
+                if (employee.manager === managerOptions[x].managerName) {
                     managerID = managerOptions[x].id;
                 }
             }
@@ -194,6 +196,7 @@ addEmployee = () => {
 updateEmployee = () => {
     //Grab employee data from employees table
     let employeeOptions = [];
+    var x;
     connection.query('SELECT first_name, last_name, id FROM employees'), function (err, res) {
         if (err) throw err;
         for (x=0; x < res.length; x++) {
@@ -232,6 +235,7 @@ updateEmployee = () => {
 
         //grab the employee we need to update's id
         let employeeID;
+        var x;
         for (x=0; x < employeeOptions.length; x++) {
             if (employee.employee === employeeOptions[x].employeeName) {
                 employeeID = employeeOptions[x].id
@@ -240,6 +244,7 @@ updateEmployee = () => {
 
         //Get the updated role ID
         let roleID;
+        var x;
         for (x=0, x < roleOptions.length; x++;) {
             if (employee.newRole === roleOptions[x].title) {
                 roleID = roleOptions[x].id
@@ -261,5 +266,5 @@ updateEmployee = () => {
 deleteEmployee = () => {
     //add delete functions
 }
-  
+
   welcomeMessage();
