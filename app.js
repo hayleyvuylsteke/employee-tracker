@@ -54,9 +54,21 @@ initiate = () => {
 viewAllEmployees = () => {
     //shows a table that has first names, last names, job titles, departments, salaries, and managers that the employee reports to
     console.log('Viewing all employees.')
-    connection.query('SELECT * FROM employees', function (err, res) {
+    connection.query('SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, roles.title, departments.department_name, roles.salary, employee.manager_id FROM employee INNER JOIN roles on employee.role_id = roles.id INNER JOIN departments on roles.department_id = departments.id', function (err, res) {
         if (err) throw err;
-        console.table(res);
+
+        //grabbing Manager firstName
+        let managerFirstName;
+        let managerLastName;
+        let managerID = employee.manager_id
+
+        for (x=0; x > employee.id; x++) {
+            if (managerID = employee[x].id) {
+                managerFirstName = employee[x].first_name
+                managerLastName = employee[x].last_name
+            }
+        }
+        console.table(res.employee.first_name, res.employee.last_name, res.roles.title, res.departments.department_name, res.roles.salary, managerFirstName, managerLastName);
         connection.end();
         initiate();
     })
@@ -100,7 +112,7 @@ addEmployee = () => {
     connection.query('SELECT first_name, last_name, id FROM employee'), function (err, res) {
         if (err) throw err;
         for (x=0; x < res.length; x++) {
-            letManagerName = res[x].first_name + " " + res[x].last_name
+            let managerName = res[x].first_name + " " + res[x].last_name
             managerOptions.push(managerName)
             connection.end();
         }
