@@ -26,7 +26,7 @@ initiate = () => {
             type: 'list',
             name: 'options',
             message: 'What can I help you with today?',
-            choices: ['View all employees.', 'View all Employees by Department.', 'View all Employees by Manager.', 'Add an employee.', 'Update an employee.', 'Delete an employee.',]
+            choices: ['View all employees.', 'View all Employees by Department.', 'View all Employees by Manager.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.',]
         }
     ]);
     if (option.choice === "View all employees.") {
@@ -166,8 +166,71 @@ addEmployee = () => {
 }
 
 updateEmployee = () => {
-    //add update functions
-}
+    //Grab employee data from employees table
+    let employeeOptions = [];
+    connection.query('SELECT first_name, last_name, id FROM employees'), function (err, res) {
+        if (err) throw err;
+        for (x=0; x < res.length; x++) {
+            let employeeName = res[x].first_name + " " + res[x].last_name
+            employeeOptions.push(employeeName)
+            connection.end();
+        }
+    }
+
+    //Grab role data from roles table
+    let roleOptions = [];
+    connection.query('SELECT title, id FROM roles'), function (err, res) {
+        if (err) throw err;
+        for (x=0; x < res.length; x++) {
+            roleOptions.push(res[x].title)
+            connection.end();
+        }
+    }
+
+    //Prompt for employee info
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employee',
+            message: 'Which employee would you like to edit?',
+            choices: employeeOptions,
+
+        },
+        {
+            type: 'list',
+            name: 'newRole',
+            message: 'What is their new role?',
+            choices: roleOptions,
+        },
+    ]).then((employee) => {
+
+        //grab the employee we need to update's id
+        let employeeID;
+        for (x=0; x < employeeOptions.length; x++) {
+            if (employee.employee === employeeOptions[x].employeeName) {
+                employeeID = employeeOptions[x].id
+            }
+        }
+
+        //Get the updated role ID
+        let roleID;
+        for (x=0, x < roleOptions.length; x++;) {
+            if (employee.newRole === roleOptions[x].title) {
+                roleID = roleOptions[x].id
+            }
+        }
+
+        // Update employees role ID
+        const sql = `UPDATE employee SET role_id = roleID WHERE id = employeeID`
+        connection.query(sql, function(err, res) {
+            if (err) return err;
+
+            console.log(employee.employee + " role has been successfully updated");
+        })
+        
+        initiate();
+    });
+};
 
 deleteEmployee = () => {
     //add delete functions
