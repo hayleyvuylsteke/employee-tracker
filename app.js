@@ -17,39 +17,43 @@ const connection = mysql.createConnection({
 //User prompt messages/functions
 welcomeMessage = () => {
  console.log('===== Welcome to the Employee database! ======')
- initiate();
+  initiate();
 }
 
-initiate = () => {
+async function initiate () {
     
-    const option = inquirer.prompt([
+    const options = await inquirer.prompt([
+        
         {
             type: 'list',
             name: 'options',
             message: 'What can I help you with today?',
-            choices: ['View all employees.', 'View all roles.', 'View all departments.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.',]
+            choices: ['View all employees.', 'View all roles.', 'View all departments.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.']
         }
-    ]).then((option) => {
-        if (option.choice === "View all employees.") {
-            viewAllEmployees();
+    ])
+    /*.then((option) => {
+        console.log('Line 32 in then')
+        if (option.options === "View all employees.") {
+            return viewAllEmployees();
         }
-        else if (option.choice === "View all roles."){
-            viewAllRoles();
+        else if (option.options === "View all roles."){
+            return viewAllRoles();
         }
-        else if (option.choice === "View all departments."){
-         viewAllDepartments();
+        else if (option.options === "View all departments."){
+            return viewAllDepartments();
         }
-        else if (option.choice === "Add an employee.") {
-            addEmployee();
+        else if (option.options === "Add an employee.") {
+            return addEmployee();
         }
-        else if (option.choice === "Update an employee.") {
-            updateEmployee();
+        else if (option.options === "Update an employee.") {
+            return updateEmployee();
         }
-        else if (option.choice === "Delete an employee.") {
-            deleteEmployee();
+        else if (option.options === "Delete an employee.") {
+            return deleteEmployee();
         }
-})
-    
+})*/
+  console.log(options)  
+  return options
 }
 
 viewAllEmployees = () => {
