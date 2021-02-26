@@ -261,10 +261,5 @@ updateEmployee = () => {
 deleteEmployee = () => {
     //add delete functions
 }
-
-//Start Express
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
   
   welcomeMessage();
