@@ -15,23 +15,21 @@ const connection = mysql.createConnection({
   
 
 //User prompt messages/functions
-welcomeMessage = () => {
+async function welcomeMessage () {
  console.log('===== Welcome to the Employee database! ======')
-  initiate();
+  await initiate();
 }
 
 async function initiate () {
-    
-    const options = await inquirer.prompt([
-        
+    return inquirer.prompt([
         {
-            type: 'list',
-            name: 'options',
-            message: 'What can I help you with today?',
-            choices: ['View all employees.', 'View all roles.', 'View all departments.', 'Add an employee.', 'Update an employee role.', 'Delete an employee.']
+            type: "list",
+            name: "options",
+            message: "What can I help you with today?",
+            choices: ["View all employees.", "View all roles.", "View all departments.", "Add an employee.", "Update an employee role.", "Delete an employee."]
         }
     ])
-    /*.then((option) => {
+    .then((option) => {
         console.log('Line 32 in then')
         if (option.options === "View all employees.") {
             return viewAllEmployees();
@@ -51,9 +49,7 @@ async function initiate () {
         else if (option.options === "Delete an employee.") {
             return deleteEmployee();
         }
-})*/
-  console.log(options)  
-  return options
+})
 }
 
 viewAllEmployees = () => {
@@ -272,4 +268,4 @@ deleteEmployee = () => {
     //add delete functions
 }
 
-  welcomeMessage();
+ welcomeMessage();
