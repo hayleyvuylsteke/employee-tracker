@@ -1,121 +1,121 @@
 --- SEEDS FOR DEPARTMENT TABLE ---
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (1, "Business Operations");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (2, "Customer Experience");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (3, "Development");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (4, "Finance");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (5, "Human Resources");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (6, "IT");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (7, "Marketing");
 
-INSERT INTO department (id, name)
+INSERT INTO departments (id, department_name)
 VALUES (8, "Sales");
 
 --- SEEDS FOR ROLE TABLE ---
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (1, "Director of Business Operations", 100000, 1);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (2, "Marketing Operations Manager", 85000, 1);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (3, "Sales Operations Manager", 85000, 1);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (4, "Business Reporting Analyst", 70000, 1);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (5, "Director of Customer Experience", 100000, 2);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (6, "Senior Customer Experience Manager", 90000, 2);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (7, "Customer Experience Manager", 85000, 2);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (8, "Customer Experience Analyst", 70000, 2);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (9, "Director of Development", 100000, 3);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (10, "Senior Clound Infrastructure Developer", 90000, 3);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (11, "Principal Software Developer", 85000, 3);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (12, "Software Developer", 70000, 3);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (13, "Director of Finance", 90000, 4);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (14, "Controller", 85000, 4);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (15, "Financial Analyst", 70000, 4);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (16, "Director of Human Resources", 100000, 5);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (17, "Talent Acquisition Manager", 90000, 5);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (18, "Human Resources Business Partner", 85000, 5);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (19, "Human Resources Co-ordinator", 60000, 5);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (20, "Director of IT", 100000, 6);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (21, "IT Business Analyst", 75000, 6);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (22, "IT Support Technician", 60000, 6);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (23, "Director of Marketing", 100000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (24, "Customer Marketing Manager", 80000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (25, "Demand Generation Manager", 80000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (26, "Event Marketing Manager", 80000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (27, "Digital Marketing Manager", 80000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (28, "Marketing Co-ordinator", 60000, 7);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (29, "Director of Sales", 100000, 8);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (30, "Inside Sales Manager", 80000, 8);
 
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO roles (id, title, salary, department_id)
 VALUES (31, "Business Opportunity Representative", 50000, 8);
 
 --- SEEDS FOR EMPLOYEES TABLE ---
