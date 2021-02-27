@@ -24,6 +24,14 @@ last_name VARCHAR(30) NOT NULL,
 role_id INT NOT NULL,
 manager_id INT,
 PRIMARY KEY (id),
-FOREIGN KEY (role_id) REFERENCES roles(id),
-FOREIGN KEY (manager_id) REFERENCES employee(id)
+FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE manager (
+id int NOT NULL,
+manager_first_name VARCHAR(30) NOT NULL,
+manager_last_name VARCHAR(30) NOT NULL,
+employee_id int NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (employee_id) REFERENCES employee(id)
 );

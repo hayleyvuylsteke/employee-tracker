@@ -8,20 +8,32 @@ const { connect } = require('http2');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    database: 'directory.db',
-    port: 3008,
-    password: 'Marketer101!'
-})
-  
+    database: 'directory_db',
+    password: 'Marketer101!',
+});
 
-//User prompt messages/functions
-async function welcomeMessage () {
- console.log('===== Welcome to the Employee database! ======')
-  await initiate();
+
+//pull all managers
+let employeeInfo = {}
+
+function pullEmployees () {
+connection.query(`SELECT * FROM employee`), function (err, res) {
+        if (err) throw err
+        let eName = res.first_name + " " + res.last_name
+        let eID = res.id
+        employeeInfo.push(eName, eID)
+    }
 }
 
-async function initiate () {
-    return inquirer.prompt([
+
+//User prompt messages/functions
+function welcomeMessage () {
+ console.log('===== Welcome to the Employee database! ======')
+  initiate();
+}
+
+function initiate () {
+    inquirer.prompt([
         {
             type: "list",
             name: "options",
@@ -29,8 +41,8 @@ async function initiate () {
             choices: ["View all employees.", "View all roles.", "View all departments.", "Add an employee.", "Update an employee role.", "Delete an employee."]
         }
     ])
-    .then((option) => {
-        console.log('Line 32 in then')
+    .then(option => {
+        console.log(option)
         if (option.options === "View all employees.") {
             return viewAllEmployees();
         }
@@ -43,7 +55,7 @@ async function initiate () {
         else if (option.options === "Add an employee.") {
             return addEmployee();
         }
-        else if (option.options === "Update an employee.") {
+        else if (option.options === "Update an employee role.") {
             return updateEmployee();
         }
         else if (option.options === "Delete an employee.") {
@@ -52,47 +64,42 @@ async function initiate () {
 })
 }
 
+//works
 viewAllEmployees = () => {
-    //shows a table that has first names, last names, job titles, departments, salaries, and managers that the employee reports to
+    //shows a table that has EMPLOYEE: first names, last names, ROLES: job titles, DEPARTMENTS: departments, ROLES: salaries, and EMPLOYEE: managers that the employee reports to
+    let managerName = []
     console.log('Viewing all employees.')
-    connection.query('SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, roles.title, departments.department_name, roles.salary, employee.manager_id FROM employee INNER JOIN roles on employee.role_id = roles.id INNER JOIN departments on roles.department_id = departments.id', function (err, res) {
-        if (err) throw err;
-
-        //grabbing Manager firstName
-        let managerFirstName;
-        let managerLastName;
-        let managerID = employee.manager_id
-
-        for (x=0; x > employee.id; x++) {
-            if (managerID = employee[x].id) {
-                managerFirstName = employee[x].first_name
-                managerLastName = employee[x].last_name
-            }
-        }
-        console.table(res.employee.first_name, res.employee.last_name, res.roles.title, res.departments.department_name, res.roles.salary, managerFirstName, managerLastName);
-        connection.end();
+    connection.query(`SELECT employee.id, employee.first_name, employee.last_name, roles.title, departments.department_name, roles.salary, manager.manager_first_name, manager.manager_last_name
+    FROM employee 
+    INNER JOIN roles on employee.role_id = roles.id
+    INNER JOIN departments on roles.department_id = departments.id
+    INNER JOIN manager on employee.manager_id = manager.id
+    `, function (err, res) {
+        if (err) throw err; 
+        console.table(res)
+        
         initiate();
     })
 }
 
+//working as expected
 viewAllDepartments = () => {
     //shows a table that has department name and department ID
     console.log('Viewing all departments.')
     connection.query('SELECT * from departments', function (err, res){
         if (err) throw err;
         console.table(res);
-        connection.end();
-        initiate();
+       // initiate();
     })
 }
 
+//working as expected
 viewAllRoles = () => {
-    //shows a table that has job title, role id, the department the role belongs to and the salary for that role
+    //shows a table that has ROLES: job title, role id, salary AND the department the role belongs to
     console.log('Viewing all roles')
-    connection.query('SELECT title, id, department_name, salary FROM roles LEFT JOIN departments ON roles.department_id = departments.id', function (err, res) {
+    connection.query('SELECT roles.title, roles.id, departments.department_name, roles.salary FROM roles INNER JOIN departments ON roles.department_id = departments.id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
         initiate();
     })
 }
@@ -100,12 +107,13 @@ viewAllRoles = () => {
 addEmployee = () => {
     //Grab role data from roles table
     let roleOptions = [];
-    connection.query('SELECT title,id FROM roles'), function (err, res) {
+    connection.query('SELECT roles.title,roles.id FROM roles'), function (err, res) {
         if (err) throw err;
         for (x=0; x < res.length; x++) {
             roleOptions.push(res[x].title)
-            connection.end();
+            console.log(roleOptions)
         }
+
     }
 
     //Grab manager data from employees table
@@ -115,7 +123,6 @@ addEmployee = () => {
         for (x=0; x < res.length; x++) {
             let managerName = res[x].first_name + " " + res[x].last_name
             managerOptions.push(managerName)
-            connection.end();
         }
     }
 
@@ -195,35 +202,107 @@ addEmployee = () => {
 }
 
 updateEmployee = () => {
-    //Grab employee data from employees table
-    let employeeOptions = [];
-    var x;
-    connection.query('SELECT first_name, last_name, id FROM employees'), function (err, res) {
+    //get Employees
+    let employeeOptions = []
+    let employeeFullName = []
+    connection.query('SELECT * FROM employee', function (err, res) {
         if (err) throw err;
+        //console.table(res)
+
         for (x=0; x < res.length; x++) {
-            let employeeName = res[x].first_name + " " + res[x].last_name
-            employeeOptions.push(employeeName)
-            connection.end();
+            let employeeFirstName = res[x].first_name 
+            let employeeLastName = res[x].last_name
+            let employeeID = res[x].id
+            employeeOptions.push({employeeFirstName, employeeLastName, employeeID})
+            employeeFullName.push(employeeFirstName + " " + employeeLastName)
         }
-    }
+       // console.log(employeeOptions)
+    })
+   // console.log(employeeOptions)
 
     //Grab role data from roles table
-    let roleOptions = [];
-    connection.query('SELECT title, id FROM roles'), function (err, res) {
-        if (err) throw err;
-        for (x=0; x < res.length; x++) {
-            roleOptions.push(res[x].title)
-            connection.end();
-        }
-    }
+    var roleOptions = [];
 
-    //Prompt for employee info
+    const testFunction = (result) => {
+        roleOptions = [...result]
+        console.log("test function" + roleOptions)
+        console.log(employeeOptions)
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employeeName',
+                message: 'Which employee would you like to edit?',
+                choices: employeeFullName
+    
+            },
+            {
+                type: 'list',
+                name: 'newRole',
+                message: 'What is their new role?',
+                choices: roleOptions,
+            },
+        ]).then((employee) => {
+            console.log(employee)
+            //split employee.employee into first name and last name
+            const [firstName,lastName] = employee.employeeName.split(" ")
+            console.log(firstName,lastName)
+
+            //map first name and last name to employeeOptions and when match grab the id
+            const {employeeID:eID} = employeeOptions.find(employee => 
+                (employee.employeeFirstName === firstName && employee.employeeLastName === lastName) 
+                    
+                
+            )
+            console.log("line 275" + eID)
+                //run query to update the role 
+
+            //grab the employee we need to update's id
+            let employeeID;
+            for (x=0; x < employeeOptions.length; x++) {
+                if (employee.employee === employeeOptions[x].employeeName) {
+                    employeeID = employeeOptions[x].id
+                }
+            }
+    
+            //Get the updated role ID
+            let roleID;
+            var x;
+            for (x=0, x < roleOptions.length; x++;) {
+                if (employee.newRole === roleOptions[x].title) {
+                    roleID = roleOptions[x].id
+                }
+            }
+    
+            // Update employees role ID
+            const sql = `UPDATE employee SET role_id = roleID WHERE id = employeeID`
+            connection.query(sql, function(err, res) {
+                if (err) return err;
+    
+                console.log(employee.employee + " role has been successfully updated");
+            })
+            
+            initiate();
+        });
+    }
+    connection.query('SELECT * FROM roles', function (err, res) {
+        if (err) throw err;
+        let options = []
+        for (x=0; x < res.length; x++) {
+            options.push(res[x].title)
+        }
+        testFunction(options)
+    })
+    console.log(roleOptions)
+
+
+    /*//Prompt for employee info
     inquirer.prompt([
         {
             type: 'list',
             name: 'employee',
             message: 'Which employee would you like to edit?',
-            choices: employeeOptions,
+            choices: employeeOptions
 
         },
         {
@@ -266,6 +345,30 @@ updateEmployee = () => {
 
 deleteEmployee = () => {
     //add delete functions
-}
+
+    //get Employees
+    let employeeOptions = []
+    connection.query('SELECT * FROM employee', function (err, res) {
+        if (err) throw err;
+        console.table(res)
+
+        for (x=0; x < res.length; x++) {
+            let employee = res[x].first_name + " " + res[x].last_name
+            employeeOptions.push(employee)
+        }
+
+        console.log(employeeOptions)
+    })
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employeeDelete',
+            message: 'Which employee do you want to delete?',
+            choices: employeeOptions
+        }
+    ])*/
+};
+
 
  welcomeMessage();
