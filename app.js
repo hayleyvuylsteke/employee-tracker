@@ -122,9 +122,8 @@ addRole = () => {
     user: 'root',
     database: 'directory_db',
     password: 'Marketer101!', }).then(connection.query('SELECT * FROM departments'))
-    .then((err, response) => {
-        if (err) throw err;
-        for (x=0; x < res.length; x++) {
+    .then((response) => {
+        for (x=0; x < response.length; x++) {
             departmentOptions.push(response[x].department_name)
             console.log(departmentOptions)
         }
