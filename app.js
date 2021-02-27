@@ -117,23 +117,69 @@ addDepartment = () => {
 
 addRole = () => {
     const departmentOptions = [];
-    mysqlPromise.createConnection({
+    connection.query('SELECT * from departments', function (err, res) {
+        if (err) throw err;
+        console.log(res)
+
+        for (x=0; x < res.length; x++) {
+
+            let departmentName = res.department_name;
+            console.log("after departmentName" + departmentName)
+            departmentOptions.push(departmentName)
+
+            console.log("inside " + departmentOptions)
+        }
+        console.log("Outside " + departmentOptions)
+        console.table(res);
+        initiate();
+    })
+   /* 
+    async function getDepartmentOptions () {
+        const conn = await mysqlPromise.createConnection({
+            host: 'localhost',
+            user: 'root',
+            database: 'directory_db',
+            password: 'Marketer101!'
+        });
+
+        const [rows] = await conn.execute('SELECT * FROM departments')
+        console.log(rows)
+    }*/
+    //getDepartmentOptions()
+   /* mysqlPromise.createConnection({
     host: 'localhost',
     user: 'root',
     database: 'directory_db',
-    password: 'Marketer101!', }).then(conn => conn.query('SELECT * FROM departments'))
-    .then(([rows, fields]) => {
-        for (x=0; x < rows.length; x++) {
-            departmentOptions.push(rows[x].department_name)
-            console.log(departmentOptions)
-        }
-    })
-    
+    password: 'Marketer101!',})
+    .then(conn => conn.query('SELECT * FROM departments'))
+    .then(([rows, fields]) => console.log(rows))*/
     /*{
-        for (x=0; x < response.length; x++) {
-            departmentOptions.push(response[x].department_name)
-            console.log(departmentOptions)
+        for (x=0; x < rows.length; x++) {
+            console.log(rows)
+            departmentOptions.push(rows[x].department_name)
         }
+        return rows;*/
+    /*}).then((departments) => {
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'newRole',
+                message: 'What is the name of the new role you would like to add?'
+            },
+            {
+                type: 'list',
+                name: 'roleDepartment',
+                message: 'Which department is this role in?',
+                choices: departmentOptions
+            },
+            {
+                type:'input',
+                name: 'roleSalary',
+                message:'What is the salary for this role?'
+            }
+        ]).then((response) => {
+            console.log(response)
+        })
     })*/
 }
 
