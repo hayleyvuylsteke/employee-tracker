@@ -121,13 +121,15 @@ addRole = () => {
     host: 'localhost',
     user: 'root',
     database: 'directory_db',
-    password: 'Marketer101!', }).then(connection.query('SELECT * FROM departments'))
-    .then((response) => {
+    password: 'Marketer101!', }).then(conn => conn.query('SELECT * FROM departments'))
+    .then(([rows, fields]) => console.log(rows[0]))
+    
+    /*{
         for (x=0; x < response.length; x++) {
             departmentOptions.push(response[x].department_name)
             console.log(departmentOptions)
         }
-    })
+    })*/
 }
 
 addEmployee = () => {
