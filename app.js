@@ -3,6 +3,7 @@ const mysql = require ('mysql2');
 const inquirer = require ('inquirer');
 const cTable = require('console.table');
 const { connect } = require('http2');
+const mysqlPromise = require('mysql2/promise')
 
 //connect to database
 const connection = mysql.createConnection({
@@ -111,6 +112,22 @@ addDepartment = () => {
             console.log('The department has been added')
             initiate();
         })
+    })
+}
+
+addRole = () => {
+    const departmentOptions = [];
+    mysqlPromise.createConnection({
+    host: 'localhost',
+    user: 'root',
+    database: 'directory_db',
+    password: 'Marketer101!', }).then(connection.query('SELECT * FROM departments'))
+    .then((err, response) => {
+        if (err) throw err;
+        for (x=0; x < res.length; x++) {
+            departmentOptions.push(response[x].department_name)
+            console.log(departmentOptions)
+        }
     })
 }
 
