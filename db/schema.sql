@@ -3,7 +3,7 @@ CREATE DATABASE directory_DB;
 USE directory_DB;
 
 CREATE TABLE departments (
-id INT NOT NULL,
+id INT AUTO_INCREMENT NOT NULL,
 department_name VARCHAR(30) NOT NULL,
 PRIMARY KEY (id)
 );

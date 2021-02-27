@@ -13,19 +13,6 @@ const connection = mysql.createConnection({
 });
 
 
-//pull all managers
-let employeeInfo = {}
-
-function pullEmployees () {
-connection.query(`SELECT * FROM employee`), function (err, res) {
-        if (err) throw err
-        let eName = res.first_name + " " + res.last_name
-        let eID = res.id
-        employeeInfo.push(eName, eID)
-    }
-}
-
-
 //User prompt messages/functions
 function welcomeMessage () {
  console.log('===== Welcome to the Employee database! ======')
@@ -38,7 +25,7 @@ function initiate () {
             type: "list",
             name: "options",
             message: "What can I help you with today?",
-            choices: ["View all employees.", "View all roles.", "View all departments.", "Add an employee.", "Update an employee role.", "Delete an employee."]
+            choices: ["View all employees.", "View all roles.", "View all departments.", "Add a department.", "Add a role.","Add an employee.", "Update an employee role.", "Delete an employee."]
         }
     ])
     .then(option => {
@@ -51,6 +38,12 @@ function initiate () {
         }
         else if (option.options === "View all departments."){
             return viewAllDepartments();
+        }
+        else if (option.options === "Add a department.") {
+            return addDepartment();
+        }
+        else if (option.options === "Add a role.") {
+            return addRole();
         }
         else if (option.options === "Add an employee.") {
             return addEmployee();
@@ -73,7 +66,7 @@ viewAllEmployees = () => {
     FROM employee 
     INNER JOIN roles on employee.role_id = roles.id
     INNER JOIN departments on roles.department_id = departments.id
-    INNER JOIN manager on employee.manager_id = manager.id
+    LEFT JOIN manager on employee.manager_id = manager.id
     `, function (err, res) {
         if (err) throw err; 
         console.table(res)
@@ -101,6 +94,23 @@ viewAllRoles = () => {
         if (err) throw err;
         console.table(res);
         initiate();
+    })
+}
+
+//WORKS!!
+addDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'newDepartment',
+            message: 'What is the new department you would like to add?'
+        }
+    ]).then((response) => {
+        connection.query(`INSERT INTO departments (department_name) VALUES ("${response.newDepartment}");`, (err, res) => {
+            if (err) throw err;
+            console.log('The department has been added')
+            initiate();
+        })
     })
 }
 
@@ -225,8 +235,6 @@ updateEmployee = () => {
 
     const testFunction = (result) => {
         roleOptions = [...result]
-        console.log("test function" + roleOptions)
-        console.log(employeeOptions)
 
         inquirer.prompt([
             {
