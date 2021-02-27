@@ -9,7 +9,7 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE roles (
-id int NOT NULL,
+id int  AUTO_INCREMENT NOT NULL,
 title VARCHAR(100) NOT NULL,
 salary DECIMAL NOT NULL,
 department_id INT NOT NULL,
