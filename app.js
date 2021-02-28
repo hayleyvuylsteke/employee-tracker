@@ -26,7 +26,7 @@ function initiate () {
             type: "list",
             name: "options",
             message: "What can I help you with today?",
-            choices: ["View all employees.", "View all roles.", "View all departments.", "Add a department.", "Add a role.","Add an employee.", "Update an employee role.", "Delete an employee."]
+            choices: ["View all employees.", "View all roles.", "View all departments.", "Add a department.", "Add a role.","Add an employee.", "Update an employee role.", "Delete an employee.", "Quit."]
         }
     ])
     .then(option => {
@@ -54,6 +54,9 @@ function initiate () {
         }
         else if (option.options === "Delete an employee.") {
             return deleteEmployee();
+        }
+        else if (option.options === "Quit.") {
+            return quit();
         }
 })
 }
@@ -209,13 +212,13 @@ addEmployee = () => {
             }
 
             console.log(managerOptions)
-            promptNewEmployee(roleNames,managerNameOptions)
+            promptNewEmployee(roleNames,managerNameOptions, roleOptions, managerOptions)
         })
 
     })
 
     //prompt needs to ask for role AND manager and then we have to go find their role_id and manager_ids
-const promptNewEmployee = (roleOptions, managerOptions) => {
+const promptNewEmployee = (roleNames, managerNameOptions) => {
     //managerOptions = [...result]
 
     inquirer.prompt([
@@ -233,20 +236,25 @@ const promptNewEmployee = (roleOptions, managerOptions) => {
             type: 'list',
             name: 'newEmployeeRole',
             message: 'What role do they have?',
-            choices: roleOptions
+            choices: roleNames
         },
         {
             type:'list',
             name: 'newEmployeeManager',
             message:'Who is their manager?',
-            choices: managerOptions
+            choices: managerNameOptions
         }
     ]).then((response) => {
+        getIDS(response)
 
-            //get ID
+        //get ID role id
+        //console.log ("line 247 roleOptions: " + roleOptions)
+
+        //get manager id
+        //console.log("line 250 managerOptions: " + managerOptions)
    
             //Push new employee
-            const sql = `INSERT INTO employee SET ? (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+            /*const sql = `INSERT INTO employee SET ? (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
             const params = [employee.first_name, employee.last_name, roleID, managerID]
 
             connection.query(sql, params, function(err, res) {
@@ -255,83 +263,98 @@ const promptNewEmployee = (roleOptions, managerOptions) => {
         
             })
 
-        initiate();
+        initiate();*/
     }) 
+/*const getIDS = (response, roleOptions,managerOptions) => {
+            //get ID role id
+            console.log ("line 247 roleOptions: " + roleOptions)
+
+            //get manager id
+            console.log("line 250 managerOptions: " + managerOptions)
+    
+}*/
 }
+console.log("line 265 managerOptions: " + managerOptions)
+console.log ("line 266 roleOptions: " + roleOptions)
 }
 
 
 
 updateEmployee = () => {
-    //Variables we need for later
-    let employeeOptions = []
-    let employeeFullName = []
-    let roleOptions = []
-    let roleName = []
+//We need to grab a list of all employees, grab a list of all roles, prompt to ask which employee and which role, then grab employee ids and role ids
+//and push the update to the employees table
 
-    //Get employees
-    connection.query('SELECT * FROM employee', function (err, res) {
-        if (err) throw err;
+    //Defining variables we need later
+    const roleNames = [];
+    const roleOptions = [];
 
-        for (x=0; x < res.length; x++) {
-            let employeeFirstName = res[x].first_name 
-            let employeeLastName = res[x].last_name
-            let employeeID = res[x].id
-            employeeOptions.push({employeeFirstName, employeeLastName, employeeID})
-            employeeFullName.push(employeeFirstName + " " + employeeLastName)
-        }
-   // })
+    const employeeFirstnameOptions = [];
+    const employeeLastnameOptions = [];
+    const employeeNameOptions = [];
+    const employeeOptions = [];
 
-    //get role information
-        connection.query('SELECT * FROM roles', function (err, res) {
+    //grabbing role data
+    connection.query('SELECT * from roles', function (err, res) {
             if (err) throw err;
-            //let options = []
-            for (x=0; x < res.length; x++) {
-                let roleN = res[x].title
-                let roleI = res[x].title
-                roleName.push(roleN)
-                roleOptions.push({roleN,roleI})
+
+            for(x=0; x < res.length; x++) {
+                let roleTitle = res[x].title;
+                let roleID = res[x].id;
+                roleNames.push(roleTitle)
+                roleOptions.push({roleTitle, roleID})
             }
-            promptAddUser(roleName)
+        console.log(roleOptions)
+
+        //grab employee data
+        connection.query('SELECT * FROM employee', function (err, res) {
+            if (err) throw err;
+            
+            for (x=0; x < res.length; x++) {
+                let employeeFirstName = res[x].first_name 
+                let employeeLastName = res[x].last_name
+                let employeeName = res[x].first_name + " " + res[x].last_name
+                let employeeID = res[x].id
+
+                employeeFirstnameOptions.push(employeeFirstName)
+                employeeLastnameOptions.push(employeeLastName)
+                employeeNameOptions.push(employeeName)
+                employeeOptions.push({employeeName, employeeID})
+            }
+
+            console.log(employeeOptions)
+            promptUpdateEmployee(roleNames,employeeNameOptions,)
         })
     })
 
-    const promptAddUser = (result) => {
-        roleName = [...result]
+    //prompt needs to ask for role AND manager and then we have to go find their role_id and manager_ids
+    const promptUpdateEmployee = (roleNames, employeeNameOptions) => {
+    //managerOptions = [...result]
 
         inquirer.prompt([
             {
-                type: 'list',
-                name: 'employeeName',
-                message: 'Which employee would you like to edit?',
-                choices: employeeFullName
-    
+            type: 'list',
+            name: 'updateEmployeeName',
+            message: 'What is the name of the employee?',
+            choices: employeeNameOptions
             },
             {
-                type: 'list',
-                name: 'newRole',
-                message: 'What is their new role?',
-                choices: roleName,
+            type: 'list',
+            name: 'updateEmployeeRole',
+            message: 'What is their new role?',
+            choices: roleNames
             },
-        ])
-        .then((employee) => {
-
-            //split employee.employee into first name and last name
-            const [firstName,lastName] = employee.employeeName.split(" ")
+        ]).then((employee) => {
+        /*//split employee.employee into first name and last name
+        const [firstName,lastName] = employee.updateEmployeeName.split(" ")
 
 
-            //map first name and last name to employeeOptions and when match grab the id
-            const {employeeID:eID} = employeeOptions.find(employee => 
-                (employee.employeeFirstName === firstName && employee.employeeLastName === lastName)    
-            )
-            //console.log("line 421 employee id: " + eID)
+        //map first name and last name to employeeOptions and when match grab the id
+        const {employeeID:eID} = employeeOptions.find(employee => 
+            (employee.employeeFirstName === firstName && employee.employeeLastName === lastName)    
+        )
+        console.log("line 421 employee id: " + eID)
 
-            //get the role ID
-            const {roleI:rID} = roleOptions.find(employee => employee.newRole)
-
-            console.log("line 426 role id: " + rID) 
-        
-            //run query to update the role 
+        //run query to update the role 
     
             // Update employees role ID
             const sql = `UPDATE employee SET role_id = roleID WHERE id = employeeID`
@@ -342,38 +365,14 @@ updateEmployee = () => {
             })
             
             initiate();
-        });
+    })
+    */
+        })
     }
 }
 
-
-
-deleteEmployee = () => {
-    //add delete functions
-
-    //get Employees
-    let employeeOptions = []
-    connection.query('SELECT * FROM employee', function (err, res) {
-        if (err) throw err;
-        console.table(res)
-
-        for (x=0; x < res.length; x++) {
-            let employee = res[x].first_name + " " + res[x].last_name
-            employeeOptions.push(employee)
-        }
-
-        console.log(employeeOptions)
-    })
-
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'employeeDelete',
-            message: 'Which employee do you want to delete?',
-            choices: employeeOptions
-        }
-    ])
-};
-
+quit = () => {
+    console.log("Goodbye!")
+}
 
  welcomeMessage();
