@@ -169,109 +169,109 @@ addRole = () => {
 }
 
 addEmployee = () => {
-    //Grab role data from roles table
-    let roleOptions = [];
-    connection.query('SELECT roles.title,roles.id FROM roles'), function (err, res) {
-        if (err) throw err;
-        for (x=0; x < res.length; x++) {
-            roleOptions.push(res[x].title)
-            console.log(roleOptions)
-        }
+    //employees need an id, first_name, last_name, role_id and manager id
 
-    }
+    //Defining variables we need later
+    const roleNames = [];
+    const roleOptions = [];
 
-    //Grab manager data from employees table
-    let managerOptions = [];
-    connection.query('SELECT first_name, last_name, id FROM employee'), function (err, res) {
-        if (err) throw err;
-        for (x=0; x < res.length; x++) {
-            let managerName = res[x].first_name + " " + res[x].last_name
-            managerOptions.push(managerName)
-        }
-    }
+    const managerFirstnameOptions = [];
+    const managerLastnameOptions = [];
+    const managerNameOptions = [];
+    const managerOptions = [];
 
+    //grabbing role data
+    connection.query('SELECT * from roles', function (err, res) {
+            if (err) throw err;
 
-    //Prompt for employee info
-     inquirer.prompt([
+            for(x=0; x < res.length; x++) {
+                let roleTitle = res[x].title;
+                let roleID = res[x].id;
+                roleNames.push(roleTitle)
+                roleOptions.push({roleTitle, roleID})
+            }
+        console.log(roleOptions)
+
+        //grab manager data
+        connection.query('SELECT * FROM manager', function (err, res) {
+            if (err) throw err;
+            
+            for (x=0; x < res.length; x++) {
+                let managerFirstName = res[x].manager_first_name 
+                let managerLastName = res[x].manager_last_name
+                let managerName = res[x].manager_first_name + " " + res[x].manager_last_name
+                let managerID = res[x].id
+
+                managerFirstnameOptions.push(managerFirstName)
+                managerLastnameOptions.push(managerLastName)
+                managerNameOptions.push(managerName)
+                managerOptions.push({managerName, managerID})
+            }
+
+            console.log(managerOptions)
+            promptNewEmployee(roleNames,managerNameOptions)
+        })
+
+    })
+
+    //prompt needs to ask for role AND manager and then we have to go find their role_id and manager_ids
+const promptNewEmployee = (roleOptions, managerOptions) => {
+    //managerOptions = [...result]
+
+    inquirer.prompt([
         {
             type: 'input',
-            name: 'first_name',
-            message: 'What is their name? (Required)',
-            validate: first_name => {
-              if (first_name) {
-                return true;
-              } else {
-                console.log('Please enter their first name!');
-                return false;
-              }
-            }
-          },
-          {
-              type: 'input',
-              name: 'last_name',
-              message: 'What is their last name? (Required)',
-              validate: last_name => {
-                if (last_name) {
-                  return true;
-                } else {
-                  console.log('Please enter their last name!');
-                  return false;
-                }
-              }
-          },
-          {
-              type: 'list',
-              name: 'role',
-              message: 'What is their role? (Required)',
-              choices: roleOptions
-          },
-          {
-              type: 'input',
-              name: 'manager',
-              message: 'Who is their manager? (Required)',
-              choices: managerOptions
-          }
-        ]).then((employee) => {
-            //Set Role ID
-            let roleID;
-            var x;
-            for (x=0; x < roleOptions.length; x++) {
-                if (employee.role === roleOptions[x].title) {
-                    roleID = roleOptions[x].id
-                }
-            }
+            name: 'newEmployeeFirstName',
+            message: 'What is the first name of the employee?'
+        },
+        {
+            type: 'input',
+            name: 'newEmployeeLastName',
+            message: 'What is the last name of the employee?'
+        },
+        {
+            type: 'list',
+            name: 'newEmployeeRole',
+            message: 'What role do they have?',
+            choices: roleOptions
+        },
+        {
+            type:'list',
+            name: 'newEmployeeManager',
+            message:'Who is their manager?',
+            choices: managerOptions
+        }
+    ]).then((response) => {
 
-            //Set Manager ID
-            let managerID;
-            var x;
-            for (x=0; x < managerOptions.length; x++) {
-                if (employee.manager === managerOptions[x].managerName) {
-                    managerID = managerOptions[x].id;
-                }
-            }
-
+            //get ID
+   
             //Push new employee
             const sql = `INSERT INTO employee SET ? (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
             const params = [employee.first_name, employee.last_name, roleID, managerID]
 
             connection.query(sql, params, function(err, res) {
                 if (err) return err;
-
                 console.log(employee.first_name + " " + employee.last_name + " has been successfully added");
-            
+        
             })
-            initiate();
-        })
 
+        initiate();
+    }) 
+}
 }
 
+
+
 updateEmployee = () => {
-    //get Employees
+    //Variables we need for later
     let employeeOptions = []
     let employeeFullName = []
+    let roleOptions = []
+    let roleName = []
+
+    //Get employees
     connection.query('SELECT * FROM employee', function (err, res) {
         if (err) throw err;
-        //console.table(res)
 
         for (x=0; x < res.length; x++) {
             let employeeFirstName = res[x].first_name 
@@ -280,15 +280,24 @@ updateEmployee = () => {
             employeeOptions.push({employeeFirstName, employeeLastName, employeeID})
             employeeFullName.push(employeeFirstName + " " + employeeLastName)
         }
-       // console.log(employeeOptions)
+   // })
+
+    //get role information
+        connection.query('SELECT * FROM roles', function (err, res) {
+            if (err) throw err;
+            //let options = []
+            for (x=0; x < res.length; x++) {
+                let roleN = res[x].title
+                let roleI = res[x].title
+                roleName.push(roleN)
+                roleOptions.push({roleN,roleI})
+            }
+            promptAddUser(roleName)
+        })
     })
-   // console.log(employeeOptions)
 
-    //Grab role data from roles table
-    var roleOptions = [];
-
-    const testFunction = (result) => {
-        roleOptions = [...result]
+    const promptAddUser = (result) => {
+        roleName = [...result]
 
         inquirer.prompt([
             {
@@ -302,39 +311,27 @@ updateEmployee = () => {
                 type: 'list',
                 name: 'newRole',
                 message: 'What is their new role?',
-                choices: roleOptions,
+                choices: roleName,
             },
-        ]).then((employee) => {
-            console.log(employee)
+        ])
+        .then((employee) => {
+
             //split employee.employee into first name and last name
             const [firstName,lastName] = employee.employeeName.split(" ")
-            console.log(firstName,lastName)
+
 
             //map first name and last name to employeeOptions and when match grab the id
             const {employeeID:eID} = employeeOptions.find(employee => 
-                (employee.employeeFirstName === firstName && employee.employeeLastName === lastName) 
-                    
-                
+                (employee.employeeFirstName === firstName && employee.employeeLastName === lastName)    
             )
-            console.log("line 275" + eID)
-                //run query to update the role 
+            //console.log("line 421 employee id: " + eID)
 
-            //grab the employee we need to update's id
-            let employeeID;
-            for (x=0; x < employeeOptions.length; x++) {
-                if (employee.employee === employeeOptions[x].employeeName) {
-                    employeeID = employeeOptions[x].id
-                }
-            }
-    
-            //Get the updated role ID
-            let roleID;
-            var x;
-            for (x=0, x < roleOptions.length; x++;) {
-                if (employee.newRole === roleOptions[x].title) {
-                    roleID = roleOptions[x].id
-                }
-            }
+            //get the role ID
+            const {roleI:rID} = roleOptions.find(employee => employee.newRole)
+
+            console.log("line 426 role id: " + rID) 
+        
+            //run query to update the role 
     
             // Update employees role ID
             const sql = `UPDATE employee SET role_id = roleID WHERE id = employeeID`
@@ -347,63 +344,9 @@ updateEmployee = () => {
             initiate();
         });
     }
-    connection.query('SELECT * FROM roles', function (err, res) {
-        if (err) throw err;
-        let options = []
-        for (x=0; x < res.length; x++) {
-            options.push(res[x].title)
-        }
-        testFunction(options)
-    })
-    console.log(roleOptions)
+}
 
 
-    /*//Prompt for employee info
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'employee',
-            message: 'Which employee would you like to edit?',
-            choices: employeeOptions
-
-        },
-        {
-            type: 'list',
-            name: 'newRole',
-            message: 'What is their new role?',
-            choices: roleOptions,
-        },
-    ]).then((employee) => {
-
-        //grab the employee we need to update's id
-        let employeeID;
-        var x;
-        for (x=0; x < employeeOptions.length; x++) {
-            if (employee.employee === employeeOptions[x].employeeName) {
-                employeeID = employeeOptions[x].id
-            }
-        }
-
-        //Get the updated role ID
-        let roleID;
-        var x;
-        for (x=0, x < roleOptions.length; x++;) {
-            if (employee.newRole === roleOptions[x].title) {
-                roleID = roleOptions[x].id
-            }
-        }
-
-        // Update employees role ID
-        const sql = `UPDATE employee SET role_id = roleID WHERE id = employeeID`
-        connection.query(sql, function(err, res) {
-            if (err) return err;
-
-            console.log(employee.employee + " role has been successfully updated");
-        })
-        
-        initiate();
-    });
-};
 
 deleteEmployee = () => {
     //add delete functions
@@ -429,7 +372,7 @@ deleteEmployee = () => {
             message: 'Which employee do you want to delete?',
             choices: employeeOptions
         }
-    ])*/
+    ])
 };
 
 
