@@ -26,6 +26,8 @@ You will need to create the database using the schema.sql file and seed it with 
 
 The intended usage of this program is to allow the user to view, add and edit information regarding this organization.
 
+[Here is a video if it in action](https://drive.google.com/file/d/1lFt82QoNdoXqshMofGQM4c57ZkmvScNM/preview).
+
 ## Questions
 
 If you have any questions about this program, contact me via github or via [email](mailto:hayleyvuylsteke@gmail.com)
