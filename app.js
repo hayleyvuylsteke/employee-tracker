@@ -265,19 +265,18 @@ const promptNewEmployee = (roleNames, managerNameOptions, roleOptions, managerOp
         console.log(roleID)
         console.log(managerID)
 
-        connection.query('INSERT INTO employee SET ? (first_name, last_name, role_id, manager_id) VALUES ("' + response.newEmployeeFirstName + '","' + response.newEmployeeLastName + '",' +roleID + ',' + managerID +');', function(err, res) {
+        connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${response.newEmployeeFirstName}","${response.newEmployeeLastName}",${roleID},${managerID});`, (err, res) => {
             if (err) return err;
-
-            console.log(response.newEmployeeFirstName + " " + response.newEmployeeLastName + " has been successfully added");
+            console.log("New employee has been successfully added");
             })
-        console.log("we gettin here?")
-        initiate();
+            initiate();
         })
+
         })
     }) 
 }
 }
-
+//WORKS
 updateEmployee = () => {
 //We need to grab a list of all employees, grab a list of all roles, prompt to ask which employee and which role, then grab employee ids and role ids
 //and push the update to the employees table
