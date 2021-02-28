@@ -57,7 +57,6 @@ function initiate () {
 })
 }
 
-//works
 viewAllEmployees = () => {
     //shows a table that has EMPLOYEE: first names, last names, ROLES: job titles, DEPARTMENTS: departments, ROLES: salaries, and EMPLOYEE: managers that the employee reports to
     console.log('Viewing all employees.')
@@ -73,7 +72,7 @@ viewAllEmployees = () => {
     })
 }
 
-//working as expected
+
 viewAllDepartments = () => {
     //shows a table that has department name and department ID
     console.log('Viewing all departments.')
@@ -84,7 +83,6 @@ viewAllDepartments = () => {
     })
 }
 
-//working as expected
 viewAllRoles = () => {
     //shows a table that has ROLES: job title, role id, salary AND the department the role belongs to
     console.log('Viewing all roles')
@@ -95,7 +93,6 @@ viewAllRoles = () => {
     })
 }
 
-//WORKS!!
 addDepartment = () => {
     inquirer.prompt([
         {
@@ -111,20 +108,18 @@ addDepartment = () => {
         })
     })
 }
-//WORKS!!!
+
 addRole = () => {
     const departmentOptions = [];
     let departmentID;
     connection.query('SELECT * from departments', function (err, res) {
         if (err) throw err;
-        //console.log(res)
 
         for (x=0; x < res.length; x++) {
             let departmentName = res[x].department_name;
             departmentOptions.push(departmentName)
         }
 
-       //console.log( departmentOptions)
        inquirer.prompt([
         {
             type: 'input',
@@ -142,11 +137,10 @@ addRole = () => {
             name: 'roleSalary',
             message:'What is the salary for this role?'
         }]).then((response) => {
-            //console.log(response)
+  
             //get ID
             connection.query('SELECT * from departments', function (err, res) {
                 if (err) throw err;
-                //console.log(res)
         
                 for (x=0; x < res.length; x++) {
                     if (response.roleDepartment === res[x].department_name){
@@ -154,7 +148,6 @@ addRole = () => {
                     }
                 }
             //insert into database
-            //console.log("inside insert into database " + response.newRole, response.roleSalary, departmentID)
             connection.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${response.newRole}", ${response.roleSalary}, ${departmentID});`, (err,res) => {
                     if (err) throw err;
                     console.log('The role has been added')
@@ -187,7 +180,6 @@ addEmployee = () => {
                 roleNames.push(roleTitle)
                 roleOptions.push({roleTitle, roleID})
             }
-        //console.log(roleOptions)
 
         //grab manager data
         connection.query('SELECT * FROM manager', function (err, res) {
@@ -205,7 +197,6 @@ addEmployee = () => {
                 managerOptions.push({managerName, managerID})
             }
 
-            //console.log(managerOptions)
             promptNewEmployee(roleNames,managerNameOptions, roleOptions, managerOptions)
         })
 
@@ -213,7 +204,6 @@ addEmployee = () => {
 
     //prompt needs to ask for role AND manager and then we have to go find their role_id and manager_ids
 const promptNewEmployee = (roleNames, managerNameOptions, roleOptions, managerOptions) => {
-    //managerOptions = [...result]
 
     inquirer.prompt([
         {
@@ -241,14 +231,12 @@ const promptNewEmployee = (roleNames, managerNameOptions, roleOptions, managerOp
     ]).then((response) => {
         let roleID;
         let managerID;
-
-        console.log(response.newEmployeeRole)
+        
         connection.query('SELECT * from roles WHERE title like ' + "'%" + response.newEmployeeRole + "%'" , function (err, res) {
             if (err) throw err
 
             for (x=0; x < res.length; x++) {
                 roleID = res[x].id
-                //roleID.push(rID)
             }
         
         //split employee.employee into first name and last name
@@ -259,27 +247,20 @@ const promptNewEmployee = (roleNames, managerNameOptions, roleOptions, managerOp
 
             for (x=0; x < res.length; x++) {
                 managerID = res[x].id
-                //managerID.push(mID)
-           // console.log(managerID)
             }
-        console.log(roleID)
-        console.log(managerID)
 
         connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${response.newEmployeeFirstName}","${response.newEmployeeLastName}",${roleID},${managerID});`, (err, res) => {
             if (err) return err;
             console.log("New employee has been successfully added");
             })
-            initiate();
         })
+        initiate();
+        })
+    })
+}
+}
 
-        })
-    }) 
-}
-}
-//WORKS
 updateEmployee = () => {
-//We need to grab a list of all employees, grab a list of all roles, prompt to ask which employee and which role, then grab employee ids and role ids
-//and push the update to the employees table
 
     //Defining variables we need later
     const roleNames = [];
@@ -300,7 +281,6 @@ updateEmployee = () => {
                 roleNames.push(roleTitle)
                 roleOptions.push({roleTitle, roleID})
             }
-        console.log(roleOptions)
 
         //grab employee data
         connection.query('SELECT * FROM employee', function (err, res) {
@@ -318,14 +298,12 @@ updateEmployee = () => {
                 employeeOptions.push({employeeName, employeeID})
             }
 
-            console.log(employeeOptions)
             promptUpdateEmployee(roleNames,employeeNameOptions,)
         })
     })
 
     //prompt needs to ask for role AND manager and then we have to go find their role_id and manager_ids
     const promptUpdateEmployee = (roleNames, employeeNameOptions) => {
-    //managerOptions = [...result]
 
         inquirer.prompt([
             {
@@ -354,8 +332,6 @@ updateEmployee = () => {
 
                 //split employee.employee into first name and last name
                 const [firstName,lastName] = employee.updateEmployeeName.split(" ")
-                //console.log("split name like 359 :" + firstName + lastName)
-                //console.log(roleID)
 
                 connection.query('UPDATE employee SET role_id = '+ roleID + ' WHERE first_name like '+ "'%" + firstName + "%'" + ' AND last_name like ' + "'%" + lastName + "%'", function(err, res) {
                     if (err) return err;
