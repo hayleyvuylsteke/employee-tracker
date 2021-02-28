@@ -9,7 +9,7 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE roles (
-id int  AUTO_INCREMENT NOT NULL,
+id int AUTO_INCREMENT NOT NULL,
 title VARCHAR(100) NOT NULL,
 salary DECIMAL NOT NULL,
 department_id INT NOT NULL,
@@ -18,7 +18,7 @@ FOREIGN KEY (department_id) REFERENCES departments(id)
 );
 
 CREATE TABLE employee (
-id int NOT NULL,
+id int AUTO_INCREMENT NOT NULL,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
 role_id INT NOT NULL,
